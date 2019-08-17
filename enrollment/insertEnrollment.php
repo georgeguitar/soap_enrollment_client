@@ -1,7 +1,11 @@
 <?php
 include('../config.inc.php');
 $data = new SoapClient(DIRECCION_BASE_ENROLLMENT);
+$conStudent = new SoapClient(DIRECCION_BASE_STUDENT);
+$conProgram = new SoapClient(DIRECCION_BASE_PROGRAM);
 
+$dataStudent = $conStudent->getAllStudents();
+$dataProgram = $conProgram->getAllPrograms();
 ?>
 <!doctype html>
 <html lang="en">
@@ -85,13 +89,30 @@ $data = new SoapClient(DIRECCION_BASE_ENROLLMENT);
     <input type="text" class="form-control" id="inputDateEnrollment" name="inputDateEnrollment" placeholder="Date Enrollment">
   </div>
   <div class="form-group">
-    <label for="studentId">student_id</label>
-    <input type="text" class="form-control" id="inputStudentId" name="inputStudentId" placeholder="student_id">
+    <label for="selectStudent">Student</label>
+    <select class="form-control" id="selectStudent" name="selectStudent">
+      <?php
+      foreach ($dataStudent->studentInfo as $valueStudent) {
+      ?>
+      <option value="<?php echo $valueStudent->studentId; ?>"><?php echo $valueStudent->name; ?></option>
+      <?php
+        }
+      ?>
+    </select>
   </div>
   <div class="form-group">
-    <label for="programId">program_id</label>
-    <input type="text" class="form-control" id="inputProgramId" name="inputProgramId" placeholder="program_id">
+    <label for="selectProgram">Program</label>
+    <select class="form-control" id="selectProgram" name="selectProgram">
+      <?php
+      foreach ($dataProgram->programInfo as $valueProgram) {
+      ?>
+      <option value="<?php echo $valueProgram->programId; ?>"><?php echo $valueProgram->name; ?></option>
+      <?php
+        }
+      ?>
+    </select>
   </div>
+
   <button type="submit" class="btn btn-primary">Save</button>
 </form>   
 </main><!-- /.container -->

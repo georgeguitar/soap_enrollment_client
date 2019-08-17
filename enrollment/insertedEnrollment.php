@@ -1,19 +1,22 @@
 <?php
 include('../config.inc.php');
 $client = new SoapClient(DIRECCION_BASE_ENROLLMENT);
+$conStudent = new SoapClient(DIRECCION_BASE_STUDENT);
+$conProgram = new SoapClient(DIRECCION_BASE_PROGRAM);
 
-/** addEnrollment **/    
 $info = array(
     'year'  => $_POST['inputYear'],
     'period' => $_POST['inputPeriod'],
     'level' => $_POST['inputLevel'],
     'date_enrollment' => $_POST['inputDateEnrollment'],
-    'student_id' => $_POST['inputStudentId'],
-    'program_id' => $_POST['inputProgramId']
+    'student_id' => $_POST['selectStudent'],
+    'program_id' => $_POST['selectProgram']
 );
 
 $data = $client->addEnrollment($info);
-//var_dump($data);
+$dataStudent = $conStudent->getStudentById(array('studentId' => $data->enrollmentInfo->student_id));
+$dataProgram = $conProgram->getProgramById(array('programId' => $data->enrollmentInfo->program_id));
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -65,7 +68,7 @@ $data = $client->addEnrollment($info);
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Entities</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
-           	<a class="dropdown-item" href="../student/student.php">student</a>
+           	<a class="dropdown-item" href="../student/student.php">Student</a>
             <a class="dropdown-item" href="../program/program.php">Program</a>
             <a class="dropdown-item" href="../enrollment/enrollment.php">Enrollment</a>
         </div>
@@ -97,12 +100,12 @@ $data = $client->addEnrollment($info);
     <p><?php echo $data->enrollmentInfo->date_enrollment; ?></p>
   </div>
   <div class="form-group">
-    <h4>student_id</h4>    
-    <p><?php echo $data->enrollmentInfo->student_id; ?></p>
+    <h4>Student</h4>    
+    <p><?php echo $dataStudent->studentInfo->name." ".$dataStudent->studentInfo->surname; ?></p>
   </div>  
   <div class="form-group">
-    <h4>program_id</h4>    
-    <p><?php echo $data->enrollmentInfo->program_id; ?></p>
+    <h4>Program</h4>    
+    <p><?php echo $dataProgram->programInfo->name; ?></p>
   </div>
 </main><!-- /.container -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
