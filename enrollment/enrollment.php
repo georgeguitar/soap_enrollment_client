@@ -1,6 +1,8 @@
 <?php
 include('../config.inc.php');
 $client = new SoapClient(DIRECCION_BASE_ENROLLMENT);
+$conStudent = new SoapClient(DIRECCION_BASE_STUDENT);
+$conProgram = new SoapClient(DIRECCION_BASE_PROGRAM);
 
 /** getAllEnrollments **/
 $data = $client->getAllEnrollments();
@@ -83,8 +85,8 @@ $data = $client->getAllEnrollments();
             <th scope="col">Year</th>
             <th scope="col">Period</th>
             <th scope="col">Date</th>
-            <th scope="col">enrollment_id</th>
-            <th scope="col">program_id</th>
+            <th scope="col">Student</th>
+            <th scope="col">Program</th>
             </tr>
         </thead>
         <tbody>
@@ -97,8 +99,14 @@ $data = $client->getAllEnrollments();
             <td><?php echo $valueEnrollment->year; ?></td>
             <td><?php echo $valueEnrollment->period; ?></td>
             <td><?php echo $valueEnrollment->date_enrollment; ?></td>
-            <td><?php echo $valueEnrollment->student_id; ?></td>
-            <td><?php echo $valueEnrollment->program_id; ?></td>
+            <td><?php 
+                $dataStudent = $conStudent->getStudentById(array('studentId' => $valueEnrollment->student_id));
+                echo $dataStudent->studentInfo->name." ".$dataStudent->studentInfo->surname; ?>
+            </td>
+            <td><?php 
+                $dataProgram = $conProgram->getProgramById(array('programId' => $valueEnrollment->program_id));
+                echo $dataProgram->programInfo->name ?>
+            </td>
             <td><a href="viewEnrollment.php?id=<?php echo $valueEnrollment->enrollmentId; ?>"><button type="button" class="btn btn-info">View</button></a><a href="updateEnrollment.php?id=<?php echo $valueEnrollment->enrollmentId; ?>"><button type="button" class="btn btn-primary">Edit</button></a><a href="deleteEnrollment.php?id=<?php echo $valueEnrollment->enrollmentId; ?>"><button type="button" class="btn btn-danger">Delete</button></a></td>
             </tr>
         <?php 

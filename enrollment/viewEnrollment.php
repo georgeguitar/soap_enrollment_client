@@ -1,6 +1,8 @@
 <?php
 include('../config.inc.php');
 $client = new SoapClient(DIRECCION_BASE_ENROLLMENT);
+$conStudent = new SoapClient(DIRECCION_BASE_STUDENT);
+$conProgram = new SoapClient(DIRECCION_BASE_PROGRAM);
 
 /** getenrollmentById **/
 $data = $client->getEnrollmentById(array('enrollmentId' => $_GET['id']));
@@ -89,12 +91,21 @@ $data = $client->getEnrollmentById(array('enrollmentId' => $_GET['id']));
     <p><?php echo $data->enrollmentInfo->date_enrollment; ?></p>
   </div>
   <div class="form-group">
-    <h4>Student_id</h4>    
-    <p><?php echo $data->enrollmentInfo->student_id; ?></p>
+    <h4>Student</h4>    
+    <p><?php
+            $dataStudent = $conStudent->getStudentById(array('studentId' => $data->enrollmentInfo->student_id));
+            echo $dataStudent->studentInfo->name." ".$dataStudent->studentInfo->surname;; 
+        ?>
+    </p>
   </div>
   <div class="form-group">
     <h4>Program_id</h4>    
-    <p><?php echo $data->enrollmentInfo->program_id; ?></p>
+    <p>
+    	<?php
+        	$dataProgram = $conProgram->getProgramById(array('programId' => $data->enrollmentInfo->program_id));
+        	echo $dataProgram->programInfo->name;
+    	?>
+    </p>
   </div>
   
   </form>
